@@ -3,7 +3,7 @@
  */
 var Crawler = require('crawler');
 var jsdom = require('jsdom');
-var util = require('./util');
+var utils = require('./utils');
 
 var current_book = {};
 
@@ -14,7 +14,7 @@ var c = new Crawler({
     callback: function ( err, result, $ ) {
         var urls = $('#list a');
 
-        util.mkdir('0/330');
+        utils.mkdir('0/330');
 
         current_book.title = $('#maininfo h1').text();
         current_book.author = $('#info p').eq(0).text();
@@ -37,34 +37,26 @@ var c = new Crawler({
                 url: _url
             })
         }
-        console.log(current_book);
-        /*util.write_config(current_book);
-        var chapter = { num: '4063307', title: '第一千两百五十二章 现世！', url: '4063307.html' };
-        one(chapter);*/
+        utils.write_config(current_book);
+        for (var j = 0; j < current_book.chapters.length; j++) {
+            one(current_book.chapters[j]);
+        }
     }
 });
 
-/*
 function one ( chapter ) {
-    c.queue({
+    c.queue([{
         uri: 'http://www.biquku.com/0/330/' + chapter.num + '.html',
         jQuery: jsdom,
         forceUTF8: true,
         callback: function ( err, result, $ ) {
             var content = $('#content').html();
 
-            util.write_chapter(chapter, content);
+            utils.write_chapter(chapter, content);
 
-            process.exit();
         }
-    });
+    }]);
 }
-
-function start () {
-    c.queue('http://www.biquku.com/0/330/');
-}
-
-start();*/
 
 function start () {
     c.queue('http://www.biquku.com/0/330/');

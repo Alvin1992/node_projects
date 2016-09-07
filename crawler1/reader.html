@@ -1,0 +1,116 @@
+<html>
+<head>
+    <title>第十二章 出手_大主宰_笔趣阁</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+<body>
+<div id="wrapper">
+    <div class="content_read">
+        <div class="box_con">
+            <div class="con_top">
+                <a href="/">小说阅读器</a> &gt;
+                <a href="/xiaoshuo1/">玄幻小说</a> &gt;
+                <a href="/0/330/">大主宰</a> &gt; 正文 <span class='chapter_title'>第十二章 出手 </span>
+            </div>
+            <div class="bookname">
+                <h1 class='chapter_title'>第十二章 出手</h1>
+                <div class="bottem1">
+                    <a href="javascript:;" class='pre_chapter_btn'>上一章</a> ←
+                    <a href="javascript:;" class='chapter_btn'>章节列表</a> →
+                    <a href="javascript:;" class='post_chapter_btn'>下一章</a>
+                    <a href="javascript:;" class='bookmark'>加入书签</a>
+                </div>
+            </div>
+
+            <div id="content">
+                正文加载中。。。
+            </div>
+
+            <div class="bottem2">
+                <a href="javascript:;" class='pre_chapter_btn'>上一章</a> ←
+                <a href="javascript:;" class='chapter_btn'>章节列表</a> →
+                <a href="javascript:;" class='post_chapter_btn'>下一章</a>
+                <a href="javascript:;" class='bookmark'>加入书签</a>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="http://libs.cdnjs.net/jquery/3.1.0/jquery.min.js"></script>
+<script>
+    //TODO: 待完善前端工作
+    /**
+     * 转href参数成键值对
+     * @param href {string} 指定的href，默认为当前页href
+     * @returns {object} 键值对
+     */
+    var getSearch = function(href) {
+        href = href || window.location.search;
+        var data = {},reg = new RegExp( "([^?=&]+)(=([^&]*))?", "g" );
+        href && href.replace(reg,function( $0, $1, $2, $3 ){
+            data[ $1 ] = $3;
+        });
+        return data;
+    }
+
+    var type = getSearch().type;
+    var book = getSearch().book;
+    var chapter = getSearch().chapter;
+
+    $.getJSON(type + '/' + book + '/book.json', function(data){
+        current_book = data;
+
+        pre_chapter_info    = current_book.chapters[parseInt(chapter) - 1];
+        chapter_info        = current_book.chapters[chapter];
+        post_chapter_info   = current_book.chapters[parseInt(chapter) + 1];
+
+        load(chapter_info);
+    });
+
+    function load ( chapter_info ) {
+        $('title').html(chapter_info.title);
+        $('.chapter_title').html(chapter_info.title);
+        $('#content').load(type + '/' + book + '/' + chapter_info.url);
+    }
+
+    //上一章
+    $('.pre_chapter_btn').on('click', function(){
+        console.log(pre_chapter_info);
+
+        load(pre_chapter_info);
+
+        addHistory(type, book, parseInt(chapter) - 1)
+    });
+
+    //章节列表
+    $('.chapter_btn').on('click', function(){
+        console.log(chapter_info);
+        window.scrollTo(0,0);
+    });
+
+    //下一章
+    $('.post_chapter_btn').on('click', function(){
+        console.log(post_chapter_info);
+
+        load(post_chapter_info);
+
+        addHistory(type, book, parseInt(chapter) + 1);
+    });
+
+    function addHistory(type, book, chapter) {
+        history.pushState({"chapter":chapter}, '','/reader.html?type='+type+'&book='+book+'&chapter=' + chapter + '');
+        reset();
+        window.scrollTo(0,0);
+    }
+
+    function reset(){
+        type = getSearch().type;
+        book = getSearch().book;
+        chapter = getSearch().chapter;
+
+        pre_chapter_info    = current_book.chapters[parseInt(chapter) - 1]
+        chapter_info        = current_book.chapters[chapter]
+        post_chapter_info   = current_book.chapters[parseInt(chapter) + 1]
+    }
+</script>
+</body>
+</html>
