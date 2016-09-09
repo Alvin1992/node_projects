@@ -22,10 +22,10 @@ superagent.get(cnodeUrl).end((err, res) => {
         topicUrls.push(href);
     });
     
-    //console.log(topicUrls);
+    console.log(topicUrls);
     var ep = new eventproxy();
 
-    ep.after('getTopicInfo', 3, (topics) => {
+    ep.after('getTopicInfo', topicUrls.length, (topics) => {
         topics = topics.map((topicPair) => {
             var topicUrl = topicPair[0];
             var topicHtml = topicPair[1];
@@ -48,11 +48,27 @@ superagent.get(cnodeUrl).end((err, res) => {
         });
     });
 
-    topicUrls.length = 3;
-    topicUrls.forEach((tUrl) => {
+
+    // 由于网站限制一次获取40会导致返回的内容为空
+    /*topicUrls.forEach((tUrl) => {
         superagent.get(tUrl).end((err, res) => {
             console.log('fetch ' + tUrl + ' successful');
             ep.emit('getTopicInfo', [tUrl, res.text]);
         });
-    });
+    });*/
+
+    var count = 0;
+    var timer = setInterval(function (  ) {
+        for (var i= count*4; i< (count+1)*4; i++) {
+            var tUrl = topicUrls[i];
+            superagent.get(tUrl).end((err, res) => {
+                console.log('fetch ' + tUrl + ' successful');
+                ep.emit('getTopicInfo', [tUrl, res.text]);
+            });
+        }
+        count++;
+        if ( count > 9 ) {
+            clearInterval(timer);
+        }
+    },1000);
 });
