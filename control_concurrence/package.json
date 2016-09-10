@@ -1,0 +1,19 @@
+{
+  "name": "control_concurrence",
+  "version": "1.0.0",
+  "description": "use async control concurrence",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "async"
+  ],
+  "author": "Alvin",
+  "license": "MIT",
+  "dependencies": {
+    "async": "^2.0.1",
+    "cheerio": "^0.22.0",
+    "superagent": "^2.2.0"
+  }
+}
